@@ -98,7 +98,7 @@ async def main():
 
                 
             # 新規情報の確認
-            if (date, title, url , category, start_time) not in existing_schedules:
+            if (date, title, url, category, start_time) not in existing_schedules:
                 new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
