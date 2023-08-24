@@ -70,4 +70,5 @@ jobs:
 
         if response.status_code != 204:
             print(f"通知に失敗したで: {response.text}")
+        "
 
