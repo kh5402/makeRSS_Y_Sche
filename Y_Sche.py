@@ -1,8 +1,9 @@
+
 from bs4 import BeautifulSoup
 from pyppeteer import launch
 import re
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
-from datetime import datetime
+from datetime import datetime, timedelta
 import xml.dom.minidom
 import asyncio
 
@@ -39,7 +40,7 @@ async def main():
     # RSSフィードを生成
     rss = Element("rss", version="2.0")
     channel = SubElement(rss, "channel")
-    SubElement(channel, "title").text = "弓木奈於のスケジュール"
+    SubElement(channel, "title").text = "弓木奈緒のスケジュール"
     SubElement(channel, "description").text = ""
     SubElement(channel, "link").text = ""
     for date, title, url in schedules:
