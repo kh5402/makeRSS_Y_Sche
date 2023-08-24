@@ -38,7 +38,7 @@ async def main():
     #existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
     existing_schedules_full, existing_schedules_date_title = get_existing_schedules(existing_file) if os.path.exists(existing_file) else (set(), set())
 
-    existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules}
+    existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules_full}
     print(existing_schedules_check)
 
 
