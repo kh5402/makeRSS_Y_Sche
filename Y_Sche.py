@@ -9,9 +9,9 @@ import xml.etree.ElementTree as ET
 import asyncio
 import requests
 
-# 既存のXMLファイルから日付とタイトルの組み合わせを取得
+# 既存のXMLファイルから取得
 def get_existing_schedules(file_name):
-    existing_schedules = set()
+    existing_schedules = []
     tree = ET.parse(file_name)
     root = tree.getroot()
     for item in root.findall(".//item"):
@@ -20,10 +20,8 @@ def get_existing_schedules(file_name):
         url = item.find('link').text
         category = item.find('category').text
         start_time = item.find('start_time').text
-        existing_schedules.add((date, start_time, category, title, url))
+        existing_schedules.append((date, title, url, category, start_time)) 
     return existing_schedules
-    
-
 
 async def main():
 
@@ -98,7 +96,7 @@ async def main():
 
                 
             # 新規情報の確認
-            if (date, title) not in existing_schedules: 
+            if (date, title, url) not in [(e_date, e_title, e_url) for e_date, e_title, e_url, _, _ in existing_schedules]: 
                 new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
