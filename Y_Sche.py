@@ -11,8 +11,7 @@ import requests
 
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
-    existing_schedules_full = set()
-    existing_schedules_date_title = set()
+    existing_schedules = set()
     tree = ET.parse(file_name)
     root = tree.getroot()
     for item in root.findall(".//item"):
@@ -21,9 +20,8 @@ def get_existing_schedules(file_name):
         url = item.find('link').text
         category = item.find('category').text
         start_time = item.find('start_time').text
-        existing_schedules_full.add((date, title, url, category, start_time))
-        existing_schedules_date_title.add((date, title))
-    return existing_schedules_full, existing_schedules_date_title
+        existing_schedules.add((date, title, url, category, start_time))
+    return existing_schedules
 
 
 
@@ -35,11 +33,11 @@ async def main():
     # 既存のXMLファイルがあれば、その情報を取得
     print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
-    #existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
-    existing_schedules_full, existing_schedules_date_title = get_existing_schedules(existing_file) if os.path.exists(existing_file) else (set(), set())
+    existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
 
-    existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules_full}
-    print(existing_schedules_check)
+    # 後で重複チェックするときの為の一覧
+    existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules}
+
 
 
     # 新規情報を保存するリスト
@@ -106,7 +104,7 @@ async def main():
 
                 
             # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
-            if (date, title) not in existing_schedules_date_title: 
+            if (date, title) not in existing_schedules_check: 
                 new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
