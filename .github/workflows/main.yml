@@ -1,0 +1,52 @@
+name: Run Schedule Scraper
+on:
+  #schedule:
+  #  - cron: '0 * * * *' # 毎時実行
+  workflow_dispatch: # 手動で実行できるようにする
+env:
+  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Chromium
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
+
+    - name: Cache Chromium
+      uses: actions/cache@v2
+      with:
+        path: ~/.local/share/pyppeteer/local-chromium/
+        key: ${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-chromium-
+
+    - name: Install dependencies
+      run: |
+        pip3 install -r requirements.txt
+
+    - name: Install Pyppeteer dependencies
+      run: |
+        sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
+
+    - name: Debug Chromium Path
+      run: |
+        find ~/ -name "local-chromium" -type d
+        which chromium-browser # パスを表示するコマンド
+
+    - name: Run Pyppeteer Script
+      run: python3 path/to/Y_Sche.py # Pythonファイルのパスを適切に設定してね
+      timeout-minutes: 10
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        git commit -m "Update schedule RSS feed" || exit 0 # 変更がない場合はエラーを無視
+        git push
