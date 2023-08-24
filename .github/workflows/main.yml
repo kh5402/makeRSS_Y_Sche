@@ -59,17 +59,3 @@ jobs:
         git commit -m "Update schedule RSS feed" || exit 0 # 変更がない場合はエラーを無視
         git push
 
-    - name: Notify Discord
-      run: |
-        python3 -c "
-        import requests
-
-        payload = {'content': '新しいスケジュールのXMLがコミットされたで！🎉'}
-
-        response = requests.post('${{ env.WEBHOOK_URL }}', json=payload)
-
-        if response.status_code != 204:
-            print(f'通知に失敗したで: {response.text}')
-        "
-
-
