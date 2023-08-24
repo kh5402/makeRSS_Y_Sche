@@ -75,7 +75,7 @@ async def main():
         # BeautifulSoupで解析
         print('# BeautifulSoupで解析')
         soup = BeautifulSoup(html, 'html.parser')
-        print(soup)
+        #print(soup)
 
         # スケジュール情報の取得
         print('# スケジュール情報の取得')
