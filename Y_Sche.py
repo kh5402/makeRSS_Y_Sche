@@ -110,6 +110,7 @@ async def main():
     for date, title, url, category, start_time in new_schedules:
         discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
         payload = {"content": discord_message}
+        await asyncio.sleep(1)
 
         # Discordへメッセージを送信
         response = requests.post(webhook_url, json=payload)
