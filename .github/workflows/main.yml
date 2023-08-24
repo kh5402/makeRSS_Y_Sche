@@ -10,9 +10,22 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
+    
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+          token: ${{ secrets.MY_SECRET_TOKEN }} # ここでセットしたトークンを使うで
+    
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+          python-version: '3.x'
 
+    - name: Install dependencies
+      run: |
+        pip3 install -r requirements.txt
+
+        
     - name: Install Chromium
       run: |
         sudo apt-get update
@@ -26,9 +39,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-chromium-
 
-    - name: Install dependencies
-      run: |
-        pip3 install -r requirements.txt
+
 
     - name: Install Pyppeteer dependencies
       run: |
@@ -47,6 +58,6 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add -A
+        git add Y_Sche.xml
         git commit -m "Update schedule RSS feed" || exit 0 # 変更がない場合はエラーを無視
         git push
