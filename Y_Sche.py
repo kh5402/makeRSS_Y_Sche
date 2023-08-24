@@ -79,6 +79,7 @@ async def main():
         # スケジュール情報の取得
         print('# スケジュール情報の取得')
         day_schedules = soup.find_all('div', class_='sc--day')
+        print(day_schedules)
 
         # 各スケジュールの情報を取得
         for day_schedule in day_schedules:
