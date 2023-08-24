@@ -98,8 +98,8 @@ async def main():
                 start_time = start_time_tag.text if start_time_tag else ''
 
                 
-            # 新規情報の確認
-            if (date, title, url, category, start_time) not in existing_schedules:
+            # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
+            if (date, title) not in [(e_date, e_title) for e_date, _, _, e_title, _ in existing_schedules]:
                 new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
