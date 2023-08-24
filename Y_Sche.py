@@ -31,23 +31,16 @@ async def main():
     webhook_url = os.environ['WEBHOOK_URL']
 
     # 既存のXMLファイルがあれば、その情報を取得
-    print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
     existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
 
     # 後で重複チェックするときの為の一覧
     existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules}
     
-    print(f"既存の日付とタイトル: {existing_schedules_check}")
-
-
-
-
     # 新規情報を保存するリスト
     new_schedules = []
 
     # 先月の1日から3ヶ月先までのyyyymmを生成
-    print('# 先月の1日から3ヶ月先までのyyyymmを生成')
     start_date = (datetime.today().replace(day=1) - timedelta(days=1)).replace(day=1)
     end_date = start_date + timedelta(days=90)
     current_date = start_date
@@ -59,7 +52,6 @@ async def main():
         print('yyyymm：' + yyyymm + ' url：' + url)
         
         # Pyppeteerでブラウザを開く
-        print('# Pyppeteerでブラウザを開く')
         browser = await launch(
             executablePath='/usr/bin/chromium-browser',
             headless=True,
@@ -76,18 +68,13 @@ async def main():
         await page.goto(url)
 
         # ページのHTMLを取得
-        print('# ページのHTMLを取得')
         html = await page.content()
         
         # BeautifulSoupで解析
-        print('# BeautifulSoupで解析')
         soup = BeautifulSoup(html, 'html.parser')
-        #print(soup)
 
         # スケジュール情報の取得
-        print('# スケジュール情報の取得')
         day_schedules = soup.find_all('div', class_='sc--day')
-        #print(day_schedules)
 
         # 各スケジュールの情報を取得
         for day_schedule in day_schedules:
@@ -124,26 +111,20 @@ async def main():
         await asyncio.sleep(1)
 
         # Discordへメッセージを送信
-        #response = requests.post(webhook_url, json=payload)
-        #if response.status_code != 204:
-        #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
+        response = requests.post(webhook_url, json=payload)
+        if response.status_code != 204:
+            print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
             
     # 既存のスケジュール情報もリスト形式に変換
-    print('# 既存のスケジュール情報もリスト形式に変換')
-    #existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
     existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
     
-
     # 既存の情報と新規情報を合わせる
-    print('# 既存の情報と新規情報を合わせる')
     all_schedules = existing_schedules_list + new_schedules
 
     # 日付の降順にソート
-    print('# 日付の降順にソート')
     all_schedules.sort(key=lambda x: datetime.strptime(x[0], "%Y/%m/%d"), reverse=True)
 
     # RSSフィードを生成
-    print('# RSSフィードを生成')
     rss = Element("rss", version="2.0")
     channel = SubElement(rss, "channel")
     SubElement(channel, "title").text = "弓木奈於のスケジュール"
@@ -161,9 +142,8 @@ async def main():
     xml_str = xml.dom.minidom.parseString(tostring(rss)).toprettyxml(indent="   ")
 
     # ファイルに保存
-    print('# ファイルに保存')
-    #with open(existing_file, 'w', encoding='utf-8') as f:
-    #    f.write(xml_str)
+    with open(existing_file, 'w', encoding='utf-8') as f:
+        f.write(xml_str)
 
 # 非同期関数を実行
 asyncio.get_event_loop().run_until_complete(main())
