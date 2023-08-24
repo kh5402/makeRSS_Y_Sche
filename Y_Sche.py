@@ -116,9 +116,9 @@ async def main():
         await asyncio.sleep(1)
 
         # Discordへメッセージを送信
-        #response = requests.post(webhook_url, json=payload)
-        #if response.status_code != 204:
-        #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
+        response = requests.post(webhook_url, json=payload)
+        if response.status_code != 204:
+            print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
             
     # 既存のスケジュール情報もリスト形式に変換
     print('# 既存のスケジュール情報もリスト形式に変換')
