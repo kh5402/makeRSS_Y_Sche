@@ -37,7 +37,7 @@ async def main():
     existing_file = 'Y_Sche.xml'
     #existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
     existing_schedules_full, existing_schedules_date_title = get_existing_schedules(existing_file) if os.path.exists(existing_file) else (set(), set())
-    #print(existing_schedules)
+    print(existing_schedules_date_title)
 
     # 新規情報を保存するリスト
     new_schedules = []
@@ -128,6 +128,7 @@ async def main():
     print('# 既存のスケジュール情報もリスト形式に変換')
     #existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
     existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules_full]
+    print(existing_schedules_list)
 
 
     # 既存の情報と新規情報を合わせる
