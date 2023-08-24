@@ -95,7 +95,7 @@ async def main():
                 
             # 新規情報の確認
             if (date, title) not in existing_schedules: 
-                new_schedules.append((date, title, url))
+                new_schedules.append((date, title, url, category, start_time))
 
 
 
@@ -109,7 +109,7 @@ async def main():
     # 新規情報があれば、Discordへ通知
     print('# 新規情報があれば、Discordへ通知')
     print(new_schedules)
-    for date, title, url in new_schedules:
+    for date, title, url, category, start_time in new_schedules:
         discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
         payload = {"content": discord_message}
 
