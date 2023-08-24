@@ -20,7 +20,6 @@ def get_existing_schedules(file_name):
         url = item.find('link').text
         category = item.find('category').text
         start_time = item.find('start_time').text
-        # existing_schedules.add((date, title))
         existing_schedules.add((date, start_time, category, title, url))
     return existing_schedules
     
@@ -138,7 +137,7 @@ async def main():
     SubElement(channel, "title").text = "弓木奈於のスケジュール"
     SubElement(channel, "description").text = ""
     SubElement(channel, "link").text = ""
-    for date, title, url in all_schedules:
+    for date, title, url, category, start_time in all_schedules:
         item = SubElement(channel, "item")
         SubElement(item, "title").text = title
         SubElement(item, "link").text = url
