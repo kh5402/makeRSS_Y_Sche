@@ -15,7 +15,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.MY_SECRET_TOKEN_Y_SCHE }}
+        token: ${{ secrets.MY_SECRET_TOKEN }}
     
     - name: Set up Python
       uses: actions/setup-python@v3
