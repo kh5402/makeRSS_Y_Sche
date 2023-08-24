@@ -23,6 +23,7 @@ def get_existing_schedules(file_name):
         existing_schedules.append((date, title, url, category, start_time)) 
     return existing_schedules
 
+
 async def main():
 
     # Discordのwebhook URLを環境変数から取得
@@ -32,7 +33,7 @@ async def main():
     print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
     existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
-    print(existing_schedules)
+    #print(existing_schedules)
 
     # 新規情報を保存するリスト
     new_schedules = []
@@ -97,7 +98,7 @@ async def main():
 
                 
             # 新規情報の確認
-            if (date, start_time, category, title, url) not in existing_schedules:
+            if (date, title, url , category, start_time) not in existing_schedules:
                 new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
