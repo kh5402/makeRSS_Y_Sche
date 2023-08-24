@@ -21,7 +21,7 @@ def get_existing_schedules(file_name):
         url = item.find('link').text
         category = item.find('category').text
         start_time = item.find('start_time').text
-        existing_schedules_full.add((date, start_time, category, title, url))
+        existing_schedules_full.add((ate, title, url, category, start_time))
         existing_schedules_date_title.add((date, title))
     return existing_schedules_full, existing_schedules_date_title
 
@@ -37,7 +37,10 @@ async def main():
     existing_file = 'Y_Sche.xml'
     #existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
     existing_schedules_full, existing_schedules_date_title = get_existing_schedules(existing_file) if os.path.exists(existing_file) else (set(), set())
-    print(existing_schedules_date_title)
+
+    existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules}
+    print(existing_schedules_check)
+
 
     # 新規情報を保存するリスト
     new_schedules = []
