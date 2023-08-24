@@ -94,7 +94,9 @@ async def main():
                 title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl'))).group(1)
                 url = link['href']
                 category = link.find('p', class_='m--scone__cat__name').text
-                start_time = link.find('p', class_='m--scone__start').text
+                start_time_tag = link.find('p', class_='m--scone__start')
+                start_time = start_time_tag.text if start_time_tag else ''
+
                 
             # 新規情報の確認
             if (date, title) not in existing_schedules: 
