@@ -40,7 +40,7 @@ jobs:
         which chromium-browser # パスを表示するコマンド
 
     - name: Run Pyppeteer Script
-      run: python3 path/to/Y_Sche.py # Pythonファイルのパスを適切に設定してね
+      run: python3 Y_Sche.py # Pythonファイルのパスを適切に設定してね
       timeout-minutes: 10
 
     - name: Commit and push changes
