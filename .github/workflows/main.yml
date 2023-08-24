@@ -1,8 +1,8 @@
 name: Run Schedule Scraper
 on:
   workflow_dispatch: # 手動で実行できるようにする
-  #schedule:
-  #  - cron: '0 * * * *' # 毎時実行  
+  schedule:
+    - cron: '0 1-13/3 * * *' # 日本時間で毎日、午前10時から午後10時まで3時間ごとに実行
 env:
   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
