@@ -31,7 +31,6 @@ async def main():
     print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
     existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
-    print(existing_schedules)
 
     # 新規情報を保存するリスト
     new_schedules = []
@@ -83,9 +82,10 @@ async def main():
             if date_tag is None:
                 continue
             date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.find('p', class_='sc--day__d f--head').text}"
+            
             schedule_links = day_schedule.find_all('a', class_='m--scone__a hv--op')
             for link in schedule_links:
-                title = re.search(r'<!--wovn-src:(.*?)-->', str(link.find('p', class_='m--scone__ttl'))).group(1)
+                title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl'))).group(1)
                 url = link['href']
                 schedules.append((date, title, url))
                 
