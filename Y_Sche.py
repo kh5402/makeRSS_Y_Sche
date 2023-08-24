@@ -21,7 +21,7 @@ def get_existing_schedules(file_name):
         url = item.find('link').text
         category = item.find('category').text
         start_time = item.find('start_time').text
-        existing_schedules_full.add((ate, title, url, category, start_time))
+        existing_schedules_full.add((date, title, url, category, start_time))
         existing_schedules_date_title.add((date, title))
     return existing_schedules_full, existing_schedules_date_title
 
