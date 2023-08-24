@@ -116,9 +116,9 @@ async def main():
         await asyncio.sleep(1)
 
         # Discordへメッセージを送信
-        response = requests.post(webhook_url, json=payload)
-        if response.status_code != 204:
-            print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
+        #response = requests.post(webhook_url, json=payload)
+        #if response.status_code != 204:
+        #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
             
     # 既存のスケジュール情報もリスト形式に変換
     print('# 既存のスケジュール情報もリスト形式に変換')
@@ -152,8 +152,8 @@ async def main():
 
     # ファイルに保存
     print('# ファイルに保存')
-    with open(existing_file, 'w', encoding='utf-8') as f:
-        f.write(xml_str)
+    #with open(existing_file, 'w', encoding='utf-8') as f:
+    #    f.write(xml_str)
 
 # 非同期関数を実行
 asyncio.get_event_loop().run_until_complete(main())
