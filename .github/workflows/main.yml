@@ -61,6 +61,7 @@ jobs:
 
     - name: Notify Discord
       run: |
+        python3 -c "
         import requests
 
         payload = {"content": "新しいスケジュールのXMLがコミットされたで！🎉"}
