@@ -9,9 +9,10 @@ import xml.etree.ElementTree as ET
 import asyncio
 import requests
 
-# 既存のXMLファイルから取得
+# 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
-    existing_schedules = []
+    existing_schedules_full = set()
+    existing_schedules_date_title = set()
     tree = ET.parse(file_name)
     root = tree.getroot()
     for item in root.findall(".//item"):
@@ -20,8 +21,10 @@ def get_existing_schedules(file_name):
         url = item.find('link').text
         category = item.find('category').text
         start_time = item.find('start_time').text
-        existing_schedules.append((date, title, url, category, start_time)) 
-    return existing_schedules
+        existing_schedules_full.add((date, start_time, category, title, url))
+        existing_schedules_date_title.add((date, title))
+    return existing_schedules_full, existing_schedules_date_title
+
 
 
 async def main():
@@ -32,7 +35,8 @@ async def main():
     # 既存のXMLファイルがあれば、その情報を取得
     print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
-    existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
+    #existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
+    existing_schedules_full, existing_schedules_date_title = get_existing_schedules(existing_file) if os.path.exists(existing_file) else (set(), set())
     #print(existing_schedules)
 
     # 新規情報を保存するリスト
@@ -99,7 +103,7 @@ async def main():
 
                 
             # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
-            if (date, title) not in [(e_date, e_title) for e_date, _, _, e_title, _ in existing_schedules]:
+            if (date, title) not in existing_schedules_date_title: 
                 new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
