@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: kh5402/makeRSS_Y_Sche
-        token: ${{ secrets.MY_SECRET_TOKEN_Y_Sche }}
+        token: ${{ secrets.MY_SECRET_TOKEN_Y_SCHE }}
     
     - name: Set up Python
       uses: actions/setup-python@v3
