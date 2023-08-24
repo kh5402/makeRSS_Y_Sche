@@ -75,6 +75,7 @@ async def main():
         # BeautifulSoupで解析
         print('# BeautifulSoupで解析')
         soup = BeautifulSoup(html, 'html.parser')
+        print(soup)
 
         # スケジュール情報の取得
         print('# スケジュール情報の取得')
@@ -88,18 +89,16 @@ async def main():
             date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.find('p', class_='sc--day__d f--head').text}"
             
             schedule_links = day_schedule.find_all('a', class_='m--scone__a hv--op')
+            
             for link in schedule_links:
                 title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl'))).group(1)
                 url = link['href']
-                schedules.append((date, title, url))
+                category = link.find('p', class_='m--scone__cat__name').text
+                start_time = link.find('p', class_='m--scone__start').text
                 
             # 新規情報の確認
             if (date, title) not in existing_schedules: 
                 new_schedules.append((date, title, url, category, start_time))
-
-
-
-        
                 
         # 次の月へ        
         current_date = (current_date + timedelta(days=31)).replace(day=1)
