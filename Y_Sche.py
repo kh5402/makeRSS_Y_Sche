@@ -19,6 +19,7 @@ def get_existing_schedules(file_name):
         title = item.find('title').text
         existing_schedules.add((date, title))
     return existing_schedules
+    
 
 
 async def main():
@@ -27,14 +28,16 @@ async def main():
     webhook_url = os.environ['WEBHOOK_URL']
 
     # 既存のXMLファイルがあれば、その情報を取得
+    print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
     existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
+    print(existing_schedules)
 
     # 新規情報を保存するリスト
     new_schedules = []
 
-    
     # 当月から今日から3ヶ月先までのyyyymmを生成
+    print('# 当月から今日から3ヶ月先までのyyyymmを生成')
     start_date = datetime.today().replace(day=1)
     end_date = datetime.today() + timedelta(days=90)
     current_date = start_date
@@ -43,6 +46,7 @@ async def main():
         
         yyyymm = current_date.strftime('%Y%m')
         url = f"https://www.nogizaka46.com/s/n46/media/list?dy={yyyymm}&members={{%22member%22:[%2255387%22]}}"
+        print('yyyymm：' + yyyymm + ' url：' + url)
         
         # Pyppeteerでブラウザを開く
         print('# Pyppeteerでブラウザを開く')
@@ -99,6 +103,8 @@ async def main():
             current_date = (current_date + timedelta(days=1)).replace(day=1) # 月を1つ進める
     
     # 新規情報があれば、Discordへ通知
+    print('# 新規情報があれば、Discordへ通知')
+    print(new_schedules)
     for date, start_time, category, title, url in new_schedules:
         discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
         payload = {"content": discord_message}
@@ -109,15 +115,19 @@ async def main():
             print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
             
     # 既存のスケジュール情報もリスト形式に変換
+    print('# 既存のスケジュール情報もリスト形式に変換')
     existing_schedules_list = [(date, title, '') for date, title in existing_schedules]
 
     # 既存の情報と新規情報を合わせる
+    print('# 既存の情報と新規情報を合わせる')
     all_schedules = existing_schedules_list + new_schedules
 
     # 日付の降順にソート
+    print('# 日付の降順にソート')
     all_schedules.sort(key=lambda x: datetime.strptime(x[0], "%Y/%m/%d"), reverse=True)
 
     # RSSフィードを生成
+    print('# RSSフィードを生成')
     rss = Element("rss", version="2.0")
     channel = SubElement(rss, "channel")
     SubElement(channel, "title").text = "弓木奈於のスケジュール"
@@ -131,6 +141,7 @@ async def main():
     xml_str = xml.dom.minidom.parseString(tostring(rss)).toprettyxml(indent="   ")
 
     # ファイルに保存
+    print('# ファイルに保存')
     with open(existing_file, 'w', encoding='utf-8') as f:
         f.write(xml_str)
 
