@@ -32,6 +32,7 @@ async def main():
     print('# 既存のXMLファイルがあれば、その情報を取得')
     existing_file = 'Y_Sche.xml'
     existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
+    print(existing_schedules)
 
     # 新規情報を保存するリスト
     new_schedules = []
@@ -113,9 +114,9 @@ async def main():
         await asyncio.sleep(1)
 
         # Discordへメッセージを送信
-        response = requests.post(webhook_url, json=payload)
-        if response.status_code != 204:
-            print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
+        #response = requests.post(webhook_url, json=payload)
+        #if response.status_code != 204:
+        #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
             
     # 既存のスケジュール情報もリスト形式に変換
     print('# 既存のスケジュール情報もリスト形式に変換')
