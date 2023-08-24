@@ -38,10 +38,10 @@ async def main():
     # 新規情報を保存するリスト
     new_schedules = []
 
-    # 当月から今日から3ヶ月先までのyyyymmを生成
-    print('# 当月から今日から3ヶ月先までのyyyymmを生成')
-    start_date = datetime.today().replace(day=1)
-    end_date = datetime.today() + timedelta(days=90)
+    # 先月の1日から3ヶ月先までのyyyymmを生成
+    print('# 先月の1日から3ヶ月先までのyyyymmを生成')
+    start_date = (datetime.today().replace(day=1) - timedelta(days=1)).replace(day=1)
+    end_date = start_date + timedelta(days=90)
     current_date = start_date
     schedules = []
     while current_date <= end_date:
