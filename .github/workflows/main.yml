@@ -1,20 +1,19 @@
 name: Run Schedule Scraper
 on:
-  #schedule:
-  #  - cron: '0 * * * *' # 毎時実行
   workflow_dispatch: # 手動で実行できるようにする
+  #schedule:
+  #  - cron: '0 * * * *' # 毎時実行  
 env:
   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
 jobs:
-  scrape:
+  run-script:
     runs-on: ubuntu-latest
-    steps:
     
+    steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
-        repository: kh5402/makeRSS_Y_Sche
         token: ${{ secrets.MY_SECRET_TOKEN_Y_SCHE }}
     
     - name: Set up Python
