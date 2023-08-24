@@ -25,7 +25,10 @@ jobs:
       run: |
         pip3 install -r requirements.txt
 
-        
+    - name: Install Pyppeteer dependencies
+      run: |
+        sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
+      
     - name: Install Chromium
       run: |
         sudo apt-get update
@@ -38,12 +41,6 @@ jobs:
         key: ${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-chromium-
-
-
-
-    - name: Install Pyppeteer dependencies
-      run: |
-        sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
 
     - name: Debug Chromium Path
       run: |
