@@ -37,6 +37,9 @@ async def main():
 
     # 後で重複チェックするときの為の一覧
     existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules}
+    
+    print(f"既存の日付とタイトル: {existing_schedules_check}")
+
 
 
 
@@ -103,9 +106,9 @@ async def main():
                 start_time = start_time_tag.text if start_time_tag else ''
 
                 
-            # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
-            if (date, title) not in existing_schedules_check: 
-                new_schedules.append((date, title, url, category, start_time))
+                # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
+                if (date, title) not in existing_schedules_check: 
+                    new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
         current_date = (current_date + timedelta(days=31)).replace(day=1)
