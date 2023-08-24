@@ -128,9 +128,8 @@ async def main():
     # 既存のスケジュール情報もリスト形式に変換
     print('# 既存のスケジュール情報もリスト形式に変換')
     #existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
-    existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules_full]
-    print(existing_schedules_list)
-
+    existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
+    
 
     # 既存の情報と新規情報を合わせる
     print('# 既存の情報と新規情報を合わせる')
