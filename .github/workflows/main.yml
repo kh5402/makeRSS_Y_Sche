@@ -14,7 +14,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-          token: ${{ secrets.MY_SECRET_TOKEN }} # ここでセットしたトークンを使うで
+        repository: kh5402/makeRSS_Y_Sche
+        token: ${{ secrets.MY_SECRET_TOKEN }}
     
     - name: Set up Python
       uses: actions/setup-python@v3
