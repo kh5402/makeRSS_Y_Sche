@@ -63,13 +63,10 @@ jobs:
       run: |
         import requests
 
-        webhook_url = "${{ secrets.WEBHOOK_URL }}"
-
         payload = {"content": "新しいスケジュールのXMLがコミットされたで！🎉"}
 
-        response = requests.post(webhook_url, json=payload)
+        response = requests.post('${{ env.WEBHOOK_URL }}', json=payload)
 
         if response.status_code != 204:
             print(f"通知に失敗したで: {response.text}")
-      env:
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
