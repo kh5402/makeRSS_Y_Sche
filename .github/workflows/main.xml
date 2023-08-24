@@ -1,7 +1,10 @@
 name: Run Schedule Scraper
 on:
-  schedule:
-    - cron: '0 * * * *' # 毎時実行
+  #schedule:
+  #  - cron: '0 * * * *' # 毎時実行
+  workflow_dispatch: # 手動で実行できるようにする
+env:
+  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
 
 jobs:
   scrape:
