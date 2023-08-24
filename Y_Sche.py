@@ -8,20 +8,47 @@ import xml.dom.minidom
 import asyncio
 
 async def main():
-    # 3ヶ月先までの日付でURLを生成
+    
+    # 当月から今日から3ヶ月先までのyyyymmを生成
     start_date = datetime.today().replace(day=1)
     end_date = datetime.today() + timedelta(days=90)
     current_date = start_date
     schedules = []
     while current_date <= end_date:
+        
         yyyymm = current_date.strftime('%Y%m')
         url = f"https://www.nogizaka46.com/s/n46/media/list?dy={yyyymm}&members={{%22member%22:[%2255387%22]}}"
-        browser = await launch()
+        
+        # Pyppeteerでブラウザを開く
+        print('# Pyppeteerでブラウザを開く')
+        browser = await launch(
+            executablePath='/usr/bin/chromium-browser',
+            headless=True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu'
+            ],
+        )
+        
         page = await browser.newPage()
         await page.goto(url)
+
+        # ページのHTMLを取得
+        print('# ページのHTMLを取得')
         html = await page.content()
+        
+        # BeautifulSoupで解析
+        print('# BeautifulSoupで解析')
         soup = BeautifulSoup(html, 'html.parser')
+
+        # スケジュール情報の取得
+        print('# スケジュール情報の取得')
         day_schedules = soup.find_all('div', class_='sc--day')
+
+        # スクレイピング
         for day_schedule in day_schedules:
             date_tag = day_schedule.find('div', class_='sc--day__hd js-pos a--tx')
             if date_tag is None:
@@ -32,7 +59,9 @@ async def main():
                 title = re.search(r'<!--wovn-src:(.*?)-->', str(link.find('p', class_='m--scone__ttl'))).group(1)
                 url = link['href']
                 schedules.append((date, title, url))
-        current_date += timedelta(days=30)
+        # 次の月へ        
+        current_date += timedelta(days=31)
+        current_date = current_date.replace(day=1)
 
     # 日付の降順にソート
     schedules.sort(key=lambda x: datetime.strptime(x[0], "%Y/%m/%d"), reverse=True)
@@ -40,7 +69,7 @@ async def main():
     # RSSフィードを生成
     rss = Element("rss", version="2.0")
     channel = SubElement(rss, "channel")
-    SubElement(channel, "title").text = "弓木奈緒のスケジュール"
+    SubElement(channel, "title").text = "弓木奈於のスケジュール"
     SubElement(channel, "description").text = ""
     SubElement(channel, "link").text = ""
     for date, title, url in schedules:
