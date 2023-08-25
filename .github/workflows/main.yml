@@ -33,6 +33,17 @@ jobs:
     - name: Remove existing Chromium
       run: sudo rm -f /usr/bin/chromium-browser
   
+
+
+      
+    - name: Install Chromium
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
+
+    - name: Set Chromium Path
+      run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
+
     - name: Cache Chromium
       uses: actions/cache@v2
       with:
@@ -40,13 +51,8 @@ jobs:
         key: Linux-chromium-39f335bb77453a06c1af3e8a6b2982fc20f654d2852855063c210290f02707da
         restore-keys: Linux-chromium-
 
-    - name: Set Chromium Path
-      run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
-      
-    - name: Install Chromium
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser
+
+
         
     - name: Debug Chromium Path
       run: |
