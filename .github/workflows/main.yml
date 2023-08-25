@@ -30,11 +30,6 @@ jobs:
       run: |
         sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
 
-    - name: Remove existing Chromium
-      run: sudo rm -f /usr/bin/chromium-browser
-  
-
-
       
     - name: Restore Chromium from cache
       id: cache-chromium
@@ -52,12 +47,6 @@ jobs:
       run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
 
 
-
-        
-    - name: Debug Chromium Path
-      run: |
-        find ~/ -name "local-chromium" -type d
-        which chromium-browser # パスを表示するコマンド
 
     - name: Run Pyppeteer Script
       run: python3 Y_Sche.py # Pythonファイルのパスを適切に設定してね
