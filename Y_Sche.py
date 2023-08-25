@@ -86,7 +86,12 @@ async def main():
             schedule_links = day_schedule.find_all('a', class_='m--scone__a hv--op')
             
             for link in schedule_links:
+                
                 title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl'))).group(1)
+                title_tag = link.find('p', class_='m--scone__ttl')
+                if title_tag:
+                    title = title_tag.get_text()
+                    
                 url = link['href']
                 category = link.find('p', class_='m--scone__cat__name').text
                 start_time_tag = link.find('p', class_='m--scone__start')
