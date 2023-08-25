@@ -38,7 +38,7 @@ jobs:
     - name: Cache Chromium
       uses: actions/cache@v2
       with:
-        path: ~/.local/share/pyppeteer/local-chromium/
+        path: /usr/bin/chromium-browser
         key: ${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-chromium-
@@ -47,13 +47,6 @@ jobs:
       run: |
         find ~/ -name "local-chromium" -type d
         which chromium-browser # パスを表示するコマンド
-
-    - name: Debug Chromium Cache
-      run: |
-        echo "Chromium Cache Directory:"
-        ls -la ~/.local/share/pyppeteer/local-chromium/
-        echo "Chromium Cache Key:"
-        echo "${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}"
 
     - name: Run Pyppeteer Script
       run: python3 Y_Sche.py # Pythonファイルのパスを適切に設定してね
