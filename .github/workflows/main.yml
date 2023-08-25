@@ -36,7 +36,7 @@ jobs:
       id: cache-chromium
       uses: actions/cache@v2
       with:
-        path: ~/chromium-browser
+        path: /usr/bin/chromium-browser
         key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}
         restore-keys: Linux-chromium-
 
@@ -45,11 +45,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y chromium-browser
-        mkdir -p ~/chromium-browser
-        cp `which chromium-browser` ~/chromium-browser/
 
     - name: Set Chromium Path
-      run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
+      run: echo "CHROMIUM_PATH=/usr/bin/chromium-browser" >> $GITHUB_ENV
+
 
 
 
