@@ -22,6 +22,13 @@ jobs:
       with:
           python-version: '3.x'
 
+    - name: Cache Pyppeteer
+      uses: actions/cache@v2
+      with:
+        path: /opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/pyppeteer # Pyppeteerのインストール先のパス
+        key: my-pyppeteer-cache-v1
+        restore-keys: pyppeteer-
+    
     - name: Install dependencies
       run: |
         pip3 install -r requirements.txt
