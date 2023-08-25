@@ -9,6 +9,9 @@ import xml.etree.ElementTree as ET
 import asyncio
 import requests
 
+import pyppeteer
+print(pyppeteer.__path__)
+
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
     existing_schedules = set()
