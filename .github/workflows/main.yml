@@ -36,13 +36,13 @@ jobs:
     - name: Cache Chromium
       uses: actions/cache@v2
       with:
-        path: /usr/bin/chromium-browser
-        #key: ${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}
-        #restore-keys: |
-        #  ${{ runner.os }}-chromium-
+        path: ~/chromium-browser
         key: Linux-chromium-39f335bb77453a06c1af3e8a6b2982fc20f654d2852855063c210290f02707da
         restore-keys: Linux-chromium-
 
+    - name: Set Chromium Path
+      run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
+      
     - name: Install Chromium
       run: |
         sudo apt-get update
