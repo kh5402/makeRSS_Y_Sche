@@ -33,6 +33,10 @@ jobs:
     - name: Remove existing Chromium
       run: sudo rm -f /usr/bin/chromium-browser
 
+    - name: Check Chromium Snap Path
+      run: |
+        snap info chromium
+    
     - name: Restore Chromium from cache
       id: cache-chromium
       uses: actions/cache@v2
