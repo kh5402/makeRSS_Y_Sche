@@ -36,20 +36,20 @@ jobs:
 
 
       
-    - name: Install Chromium
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser
-
-    - name: Set Chromium Path
-      run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
-
-    - name: Cache Chromium
+    - name: Restore Chromium from cache
+      id: cache-chromium
       uses: actions/cache@v2
       with:
         path: ~/chromium-browser
-        key: Linux-chromium-39f335bb77453a06c1af3e8a6b2982fc20f654d2852855063c210290f02707da
+        key: Linux-chromium-${{ hashFiles('**/setup-chromium.sh') }}
         restore-keys: Linux-chromium-
+
+    - name: Install Chromium
+      if: steps.cache-chromium.outputs.cache-hit != 'true'
+      run: ./setup-chromium.sh
+
+    - name: Set Chromium Path
+      run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
 
 
 
