@@ -47,6 +47,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y chromium-browser
 
+    - name: Find Chromium Path
+      run: |
+        which chromium-browser
+
     - name: Set Chromium Path
       run: echo "CHROMIUM_PATH=/usr/bin/chromium-browser" >> $GITHUB_ENV
 
