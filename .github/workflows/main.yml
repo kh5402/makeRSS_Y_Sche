@@ -29,14 +29,19 @@ jobs:
     - name: Install Pyppeteer dependencies
       run: |
         sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
-      
+
+    - name: Remove existing Chromium
+      run: sudo rm -f /usr/bin/chromium-browser
+  
     - name: Cache Chromium
       uses: actions/cache@v2
       with:
         path: /usr/bin/chromium-browser
-        key: ${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-chromium-
+        #key: ${{ runner.os }}-chromium-${{ hashFiles('**/requirements.txt') }}
+        #restore-keys: |
+        #  ${{ runner.os }}-chromium-
+        key: Linux-chromium-39f335bb77453a06c1af3e8a6b2982fc20f654d2852855063c210290f02707da
+        restore-keys: Linux-chromium-
 
     - name: Install Chromium
       run: |
