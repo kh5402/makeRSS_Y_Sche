@@ -33,12 +33,20 @@ jobs:
     - name: Remove existing Chromium
       run: sudo rm -f /usr/bin/chromium-browser
     
+    #- name: Restore Chromium from cache
+    #  id: cache-chromium
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: /usr/bin/chromium-browser
+    #    key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}
+    #    restore-keys: Linux-chromium-
+    
     - name: Restore Chromium from cache
       id: cache-chromium
       uses: actions/cache@v2
       with:
-        path: /usr/bin/chromium-browser
-        key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}
+        path: ~/chromium # ここを変更
+        key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}-${{ github.run_id }} # ここを変更
         restore-keys: Linux-chromium-
 
     - name: Install Chromium
