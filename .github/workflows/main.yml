@@ -41,7 +41,8 @@ jobs:
       id: cache-chromium
       uses: actions/cache@v2
       with:
-        path: /usr/bin/chromium-browser
+        #path: /usr/bin/chromium-browser
+        path: /snap/chromium/
         key: my-chromium-cache-v1
         restore-keys: Linux-chromium-
 
