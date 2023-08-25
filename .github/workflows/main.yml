@@ -38,7 +38,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: /usr/bin/chromium-browser
-        key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}
+        key: my-chromium-cache-v1
         restore-keys: Linux-chromium-
 
 
