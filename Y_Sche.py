@@ -50,6 +50,7 @@ async def main():
         yyyymm = current_date.strftime('%Y%m')
         url = f"https://www.nogizaka46.com/s/n46/media/list?dy={yyyymm}&members={{%22member%22:[%2255387%22]}}"
         print('yyyymm：' + yyyymm + ' url：' + url)
+
         
         # Pyppeteerでブラウザを開く
         browser = await launch(
@@ -65,6 +66,7 @@ async def main():
         )
         
         page = await browser.newPage()
+        await page.setExtraHTTPHeaders({'Accept-Language': 'ja'})
         await page.goto(url)
 
         # ページのHTMLを取得
