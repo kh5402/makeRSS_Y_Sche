@@ -37,9 +37,10 @@ jobs:
       id: cache-chromium
       uses: actions/cache@v2
       with:
-        path: ~/chromium # ここを変更
-        key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}-${{ github.run_id }} # ここを変更
+        path: /usr/bin/chromium-browser
+        key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}
         restore-keys: Linux-chromium-
+
 
     - name: Install Chromium
       if: steps.cache-chromium.outputs.cache-hit != 'true'
