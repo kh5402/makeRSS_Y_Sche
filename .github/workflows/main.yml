@@ -31,17 +31,22 @@ jobs:
         sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
 
       
+
     - name: Restore Chromium from cache
       id: cache-chromium
       uses: actions/cache@v2
       with:
         path: ~/chromium-browser
-        key: Linux-chromium-${{ hashFiles('**/setup-chromium.sh') }}
+        key: Linux-chromium-${{ hashFiles('**/Dockerfile') }}
         restore-keys: Linux-chromium-
 
     - name: Install Chromium
       if: steps.cache-chromium.outputs.cache-hit != 'true'
-      run: ./setup-chromium.sh
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
+        mkdir -p ~/chromium-browser
+        cp `which chromium-browser` ~/chromium-browser/
 
     - name: Set Chromium Path
       run: echo "CHROMIUM_PATH=~/chromium-browser" >> $GITHUB_ENV
