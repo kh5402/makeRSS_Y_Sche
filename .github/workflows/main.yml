@@ -37,14 +37,6 @@ jobs:
       run: |
         snap info chromium
     
-
-    - name: Install Chromium
-      if: steps.cache-chromium.outputs.cache-hit != 'true'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser
-        chromium-browser --version # これでバージョンを確認できるよ😊
-
     - name: Restore Chromium from cache
       id: cache-chromium
       uses: actions/cache@v2
@@ -54,6 +46,12 @@ jobs:
         key: my-chromium-cache-v1
         restore-keys: Linux-chromium-
 
+    - name: Install Chromium
+      if: steps.cache-chromium.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
+        chromium-browser --version # これでバージョンを確認できるよ😊
 
         
     - name: Find Chromium Path
