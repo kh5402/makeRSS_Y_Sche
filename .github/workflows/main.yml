@@ -31,7 +31,9 @@ jobs:
         sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
 
       
-
+    - name: Remove existing Chromium
+      run: sudo rm -f /usr/bin/chromium-browser
+    
     - name: Restore Chromium from cache
       id: cache-chromium
       uses: actions/cache@v2
