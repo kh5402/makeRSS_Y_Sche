@@ -1,3 +1,4 @@
+
 import os
 import re
 from bs4 import BeautifulSoup
@@ -31,6 +32,8 @@ def extract_url_part(url):
         return match.group(0)
     return ""
 
+
+
 async def main():
 
     # Discordのwebhook URLを環境変数から取得
@@ -42,6 +45,7 @@ async def main():
 
     # 後で重複チェックするときの為の一覧
     existing_schedules_check = {(date, extract_url_part(url)) for date, _, url, _, _ in existing_schedules}
+    print(existing_schedules_check)
     
     # 新規情報を保存するリスト
     new_schedules = []
