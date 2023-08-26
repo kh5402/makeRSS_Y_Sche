@@ -63,6 +63,8 @@ async def main():
                 '--disable-accelerated-2d-canvas',
                 '--disable-gpu'
             ],
+            defaultViewport=None,
+            userDataDir='./user_data'
         )
         
         page = await browser.newPage()
