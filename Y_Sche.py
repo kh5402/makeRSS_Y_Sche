@@ -67,7 +67,7 @@ async def main():
         
         page = await browser.newPage()
         await page.setExtraHTTPHeaders({'Accept-Language': 'ja'})
-        await page.goto(url)
+        response = await page.goto(url)
 
         # ログ出力を追加
         print("現在のHTTPヘッダー:", response.headers)
