@@ -18,8 +18,8 @@ def get_existing_schedules(file_name):
     root = tree.getroot()
     for item in root.findall(".//item"):
         date = item.find('pubDate').text
-        title = item.find('title').text
-        url = item.find('link').text
+        title = html_unescape(item.find('title').text)
+        url = html_unescape(item.find('link').text)
         category = item.find('category').text
         start_time = item.find('start_time').text
         existing_schedules.add((date, title, url, category, start_time))
