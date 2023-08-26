@@ -8,7 +8,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import asyncio
 import requests
-import html
+from html import unescape
 
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
