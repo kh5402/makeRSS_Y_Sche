@@ -63,6 +63,7 @@ async def main():
                 '--disable-accelerated-2d-canvas',
                 '--disable-gpu'
             ],
+            dumpio=True
         )
         
         page = await browser.newPage()
