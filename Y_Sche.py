@@ -103,10 +103,10 @@ async def main():
                 title_tag = link.find('p', class_='m--scone__ttl')
                 if title_tag:
                     title = title_tag.get_text()
-                title = html.unescape(title)
+                title = html.unescape(str(title))
                     
                 url = link['href']
-                url = html.unescape(url)
+                url = html.unescape(str(url))
                 
                 category = link.find('p', class_='m--scone__cat__name').text
                 start_time_tag = link.find('p', class_='m--scone__start')
