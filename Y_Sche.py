@@ -63,12 +63,14 @@ async def main():
                 '--disable-accelerated-2d-canvas',
                 '--disable-gpu'
             ],
-            dumpio=True
         )
         
         page = await browser.newPage()
         await page.setExtraHTTPHeaders({'Accept-Language': 'ja'})
         await page.goto(url)
+
+        # ログ出力を追加
+        print("現在のHTTPヘッダー:", await page.headers())
 
         # ページのHTMLを取得
         html = await page.content()
