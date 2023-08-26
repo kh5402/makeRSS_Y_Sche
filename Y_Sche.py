@@ -8,6 +8,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import asyncio
 import requests
+import html
 
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
@@ -23,7 +24,12 @@ def get_existing_schedules(file_name):
         existing_schedules.add((date, title, url, category, start_time))
     return existing_schedules
 
-
+#URLが可変する部分を除外してURLを確認する
+def extract_url_part(url):
+    match = re.search(r'pri1=(\d+)&wd00=(\d+)&wd01=(\d+)&wd02=(\d+)', url)
+    if match:
+        return match.group(0)
+    return ""
 
 async def main():
 
@@ -35,7 +41,7 @@ async def main():
     existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
 
     # 後で重複チェックするときの為の一覧
-    existing_schedules_check = {(date, title) for date, title, _, _, _ in existing_schedules}
+    existing_schedules_check = {(date, extract_url_part(url)) for date, _, url, _, _ in existing_schedules}
     
     # 新規情報を保存するリスト
     new_schedules = []
@@ -68,8 +74,10 @@ async def main():
         )
         
         page = await browser.newPage()
+        await page.setUserAgent('日本語対応のユーザーエージェント')
         await page.setExtraHTTPHeaders({'Accept-Language': 'ja'})
         response = await page.goto(url)
+        await page.waitForSelector('セレクタ', {'visible': True})
 
         # ログ出力を追加
         print("現在のHTTPヘッダー:", response.headers)
@@ -98,15 +106,19 @@ async def main():
                 title_tag = link.find('p', class_='m--scone__ttl')
                 if title_tag:
                     title = title_tag.get_text()
+                title = html.unescape(title)
                     
                 url = link['href']
+                url = html.unescape(url)
+                
                 category = link.find('p', class_='m--scone__cat__name').text
                 start_time_tag = link.find('p', class_='m--scone__start')
                 start_time = start_time_tag.text if start_time_tag else ''
 
                 
                 # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
-                if (date, title) not in existing_schedules_check: 
+                extracted_url = extract_url_part(url)
+                if (date, extracted_url) not in existing_schedules_check:
                     new_schedules.append((date, title, url, category, start_time))
                 
         # 次の月へ        
