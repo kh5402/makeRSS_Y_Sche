@@ -74,10 +74,7 @@ async def main():
         )
         
         page = await browser.newPage()
-        await page.setUserAgent('日本語対応のユーザーエージェント')
-        await page.setExtraHTTPHeaders({'Accept-Language': 'ja'})
         response = await page.goto(url)
-        await page.waitForSelector('セレクタ', {'visible': True})
 
         # ログ出力を追加
         print("現在のHTTPヘッダー:", response.headers)
