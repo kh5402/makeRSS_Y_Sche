@@ -70,7 +70,7 @@ async def main():
         await page.goto(url)
 
         # ログ出力を追加
-        print("現在のHTTPヘッダー:", await page.headers())
+        print("現在のHTTPヘッダー:", response.headers)
 
         # ページのHTMLを取得
         html = await page.content()
