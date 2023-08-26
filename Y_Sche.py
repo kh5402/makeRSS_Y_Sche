@@ -119,6 +119,7 @@ async def main():
                 
                 # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
                 extracted_url = extract_url_part(url)
+                print(extracted_url)
                 if (date, extracted_url) not in existing_schedules_check:
                     new_schedules.append((date, title, url, category, start_time))
                 
