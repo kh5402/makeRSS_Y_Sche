@@ -122,8 +122,8 @@ async def main():
                     datetime.strptime(date, "%Y/%m/%d")  # ここで日付のフォーマットをチェック
                     if (date, extracted_url) not in existing_schedules_check:
                         new_schedules.append((date, title, url, category, start_time))
-                    except ValueError:
-                        print(f"新規情報の日付のフォーマットがおかしいから、このデータはスキップするで！日付: {date}")
+                except ValueError:
+                    print(f"新規情報の日付のフォーマットがおかしいから、このデータはスキップするで！日付: {date}")
 
         # 次の月へ        
         current_date = (current_date + timedelta(days=31)).replace(day=1)
