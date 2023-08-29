@@ -45,7 +45,7 @@ async def main():
 
     # 後で重複チェックするときの為の一覧
     existing_schedules_check = {(date, extract_url_part(url)) for date, _, url, _, _ in existing_schedules}
-    print(existing_schedules_check)
+    #print(existing_schedules_check)
     
     # 新規情報を保存するリスト
     new_schedules = []
@@ -115,6 +115,7 @@ async def main():
                 category = link.find('p', class_='m--scone__cat__name').text
                 start_time_tag = link.find('p', class_='m--scone__start')
                 start_time = start_time_tag.text if start_time_tag else ''
+                print(f"取得したスケジュール\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n")
 
                 
                 # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
