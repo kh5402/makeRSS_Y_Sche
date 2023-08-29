@@ -115,15 +115,16 @@ async def main():
                 category = link.find('p', class_='m--scone__cat__name').text
                 start_time_tag = link.find('p', class_='m--scone__start')
                 start_time = start_time_tag.text if start_time_tag else ''
-                print(f"取得したスケジュール\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n")
 
-                
                 # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
                 extracted_url = extract_url_part(url)
-                print(extracted_url)
-                if (date, extracted_url) not in existing_schedules_check:
-                    new_schedules.append((date, title, url, category, start_time))
-                
+                try:
+                    datetime.strptime(date, "%Y/%m/%d")  # ここで日付のフォーマットをチェック
+                    if (date, extracted_url) not in existing_schedules_check:
+                        new_schedules.append((date, title, url, category, start_time))
+                    except ValueError:
+                        print(f"新規情報の日付のフォーマットがおかしいから、このデータはスキップするで！日付: {date}")
+
         # 次の月へ        
         current_date = (current_date + timedelta(days=31)).replace(day=1)
         if current_date.day != 1: # 月の最初の日ではない場合
