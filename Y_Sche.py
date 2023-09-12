@@ -91,6 +91,7 @@ async def main():
 
         # スケジュール情報の取得
         day_schedules = soup.find_all('div', class_='sc--day')
+        print(f"day_schedules: {day_schedules}")  # ここで取得した日ごとのスケジュール情報を出力
 
         # 各スケジュールの情報を取得
         for day_schedule in day_schedules:
@@ -122,6 +123,7 @@ async def main():
                     datetime.strptime(date, "%Y/%m/%d")  # ここで日付のフォーマットをチェック
                     if (date, extracted_url) not in existing_schedules_check:
                         new_schedules.append((date, title, url, category, start_time))
+                        print(f"新規情報を追加: {date, title, url, category, start_time}")  # ここで新規情報を出力
                 except ValueError:
                     print(f"新規情報の日付のフォーマットがおかしいから、このデータはスキップするで！日付: {date}")
 
