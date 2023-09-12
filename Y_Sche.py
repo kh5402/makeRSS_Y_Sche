@@ -26,12 +26,17 @@ def get_existing_schedules(file_name):
     return existing_schedules
 
 #URLが可変する部分を除外してURLを確認する
-def extract_url_part(url):
-    match = re.search(r'pri1=(\d+)&wd00=(\d+)&wd01=(\d+)&wd02=(\d+)', url)
-    if match:
-        return match.group(0)
-    return ""
-
+#def extract_url_part(url):
+#    match = re.search(r'pri1=(\d+)&wd00=(\d+)&wd01=(\d+)&wd02=(\d+)', url)
+#    if match:
+#        return match.group(0)
+#    return ""
+def extract_unique_part(url):
+    parsed_url = urlparse(url)
+    path = parsed_url.path.split("/")[-1]  # /103002 や /102232 を取得
+    query = parse_qs(parsed_url.query)
+    unique_part = f"{path}_{query.get('pri1', [''])[0]}_{query.get('wd00', [''])[0]}_{query.get('wd01', [''])[0]}_{query.get('wd02', [''])[0]}"
+    return unique_part
 
 
 async def main():
