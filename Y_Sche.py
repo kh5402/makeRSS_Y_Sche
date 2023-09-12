@@ -31,7 +31,7 @@ def get_existing_schedules(file_name):
 #    if match:
 #        return match.group(0)
 #    return ""
-def extract_unique_part(url):
+def extract_url_part(url):
     parsed_url = urlparse(url)
     path = parsed_url.path.split("/")[-1]  # /103002 や /102232 を取得
     query = parse_qs(parsed_url.query)
