@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 import asyncio
 import requests
 from html import unescape as html_unescape
+from urllib.parse import urlparse, parse_qs
 
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
