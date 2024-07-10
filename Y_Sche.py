@@ -43,7 +43,7 @@ def extract_url_part(url):
 async def main():
 
     # Discordのwebhook URLを環境変数から取得
-    webhook_url = os.environ['WEBHOOK_URL']
+    #webhook_url = os.environ['WEBHOOK_URL']
 
     # 既存のXMLファイルがあれば、その情報を取得
     existing_file = 'Y_Sche.xml'
@@ -140,17 +140,17 @@ async def main():
             current_date = (current_date + timedelta(days=1)).replace(day=1) # 月を1つ進める
     
     # 新規情報があれば、Discordへ通知
-    print('# 新規情報があれば、Discordへ通知')
+    #print('# 新規情報があれば、Discordへ通知')
     print(new_schedules)
-    for date, title, url, category, start_time in new_schedules:
-        discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
-        payload = {"content": discord_message}
-        await asyncio.sleep(1)
+    #for date, title, url, category, start_time in new_schedules:
+    #    discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
+    #    payload = {"content": discord_message}
+    #    await asyncio.sleep(1)
 
         # Discordへメッセージを送信
-        response = requests.post(webhook_url, json=payload)
-        if response.status_code != 204:
-            print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
+        #response = requests.post(webhook_url, json=payload)
+        #if response.status_code != 204:
+        #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
             
     # 既存のスケジュール情報もリスト形式に変換
     existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
