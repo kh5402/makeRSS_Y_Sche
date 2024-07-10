@@ -97,6 +97,7 @@ async def main():
 
         # スケジュール情報の取得
         day_schedules = soup.find_all('div', class_='sc--day')
+        print(f"check: {str(soup)[:1000]}")
         print(f"day_schedules: {day_schedules}")  # ここで取得した日ごとのスケジュール情報を出力
 
         # 各スケジュールの情報を取得
