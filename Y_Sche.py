@@ -239,4 +239,5 @@ async def main():
         f.write(xml_str)
 
 # 非同期関数を実行
-asyncio.get_event_loop().run_until_complete(main())
+#asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
