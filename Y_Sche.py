@@ -1,3 +1,9 @@
+import logging
+import traceback
+
+# ロギングの設定
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 import os
 import re
@@ -69,20 +75,61 @@ async def main():
 
         
         # Pyppeteerでブラウザを開く
-        browser = await launch(
-            executablePath='/usr/bin/chromium-browser',
-            headless=True,
-            args=[
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--disable-gpu'
-            ],
-            defaultViewport=None,
-            userDataDir='./user_data'
-        )
-        
+        #browser = await launch(
+        #    executablePath='/usr/bin/chromium-browser',
+        #    headless=True,
+        #    args=[
+        #        '--no-sandbox',
+        #        '--disable-setuid-sandbox',
+        #        '--disable-dev-shm-usage',
+        #        '--disable-accelerated-2d-canvas',
+        #        '--disable-gpu'
+        #    ],
+        #    defaultViewport=None,
+        #    userDataDir='./user_data'
+        #)
+
+        try:
+            logging.info("ブラウザの起動を開始します")
+            browser = await launch(
+                executablePath='/usr/bin/chromium-browser',
+                headless=True,
+                args=[
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--disable-gpu'
+                ],
+                defaultViewport=None,
+                userDataDir='./user_data',
+                timeout=60000  # タイムアウトを60秒に設定
+            )
+            logging.info("ブラウザが正常に起動しました")
+        except Exception as e:
+            logging.error(f"ブラウザの起動中にエラーが発生しました: {str(e)}")
+            logging.error("詳細なエラー情報:")
+            logging.error(traceback.format_exc())
+            # ここで追加のエラーハンドリングやクリーンアップ処理を行うことができます
+            # 例: システム情報の出力
+            import sys
+            logging.error(f"Python バージョン: {sys.version}")
+            logging.error(f"プラットフォーム: {sys.platform}")
+            # 例: メモリ使用状況の確認
+            import psutil
+            logging.error(f"利用可能メモリ: {psutil.virtual_memory().available / (1024 * 1024):.2f} MB")
+            # 例: ネットワーク接続の確認
+            import socket
+            try:
+                socket.create_connection(("www.google.com", 80))
+                logging.info("ネットワーク接続は正常です")
+            except OSError:
+                logging.error("ネットワーク接続に問題があります")
+            
+            # エラーが発生した場合はスクリプトを終了
+            raise
+
+
         page = await browser.newPage()
         response = await page.goto(url)
 
