@@ -238,6 +238,9 @@ async def main():
     with open(existing_file, 'w', encoding='utf-8') as f:
         f.write(xml_str)
 
+    # ブラウザを閉じる
+    await browser.close()
+
 # 非同期関数を実行
 #asyncio.get_event_loop().run_until_complete(main())
 asyncio.run(main())
