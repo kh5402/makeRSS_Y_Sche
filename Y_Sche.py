@@ -93,13 +93,15 @@ async def main():
             logging.info("ブラウザの起動を開始します")
             browser = await launch(
                 executablePath='/usr/bin/chromium-browser',
-                headless=True,
+                #headless=True,
+                headless=False, 
                 args=[
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
                     '--disable-dev-shm-usage',
                     '--disable-accelerated-2d-canvas',
-                    '--disable-gpu'
+                    '--disable-gpu',
+                    '--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"'
                 ],
                 defaultViewport=None,
                 userDataDir='./user_data',
@@ -131,7 +133,14 @@ async def main():
 
 
         page = await browser.newPage()
-        response = await page.goto(url)
+        #response = await page.goto(url)
+
+        try:
+            response = await page.goto(url)
+        except Exception as e:
+            logging.error(f"ページの読み込み中にエラーが発生しました: {str(e)}")
+            logging.error(traceback.format_exc())
+            raise
 
         # ログ出力を追加
         print("現在のHTTPヘッダー:", response.headers)
