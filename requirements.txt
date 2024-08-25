@@ -1,3 +1,4 @@
 pyppeteer
 beautifulsoup4
 requests
+psutil
