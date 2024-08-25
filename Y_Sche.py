@@ -1,9 +1,3 @@
-import logging
-import traceback
-
-# ロギングの設定
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 import os
 import re
@@ -75,72 +69,22 @@ async def main():
 
         
         # Pyppeteerでブラウザを開く
-        #browser = await launch(
-        #    executablePath='/usr/bin/chromium-browser',
-        #    headless=True,
-        #    args=[
-        #        '--no-sandbox',
-        #        '--disable-setuid-sandbox',
-        #        '--disable-dev-shm-usage',
-        #        '--disable-accelerated-2d-canvas',
-        #        '--disable-gpu'
-        #    ],
-        #    defaultViewport=None,
-        #    userDataDir='./user_data'
-        #)
-
-        try:
-            logging.info("ブラウザの起動を開始します")
-            browser = await launch(
-                executablePath='/usr/bin/chromium-browser',
-                #headless=True,
-                headless=False, 
-                args=[
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-accelerated-2d-canvas',
-                    '--disable-gpu',
-                    '--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"'
-                ],
-                defaultViewport=None,
-                userDataDir='./user_data',
-                timeout=60000  # タイムアウトを60秒に設定
-            )
-            logging.info("ブラウザが正常に起動しました")
-        except Exception as e:
-            logging.error(f"ブラウザの起動中にエラーが発生しました: {str(e)}")
-            logging.error("詳細なエラー情報:")
-            logging.error(traceback.format_exc())
-            # ここで追加のエラーハンドリングやクリーンアップ処理を行うことができます
-            # 例: システム情報の出力
-            import sys
-            logging.error(f"Python バージョン: {sys.version}")
-            logging.error(f"プラットフォーム: {sys.platform}")
-            # 例: メモリ使用状況の確認
-            import psutil
-            logging.error(f"利用可能メモリ: {psutil.virtual_memory().available / (1024 * 1024):.2f} MB")
-            # 例: ネットワーク接続の確認
-            import socket
-            try:
-                socket.create_connection(("www.google.com", 80))
-                logging.info("ネットワーク接続は正常です")
-            except OSError:
-                logging.error("ネットワーク接続に問題があります")
-            
-            # エラーが発生した場合はスクリプトを終了
-            raise
-
-
+        browser = await launch(
+            executablePath='/usr/bin/chromium-browser',
+            headless=True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu'
+            ],
+            defaultViewport=None,
+            userDataDir='./user_data'
+        )
+        
         page = await browser.newPage()
-        #response = await page.goto(url)
-
-        try:
-            response = await page.goto(url)
-        except Exception as e:
-            logging.error(f"ページの読み込み中にエラーが発生しました: {str(e)}")
-            logging.error(traceback.format_exc())
-            raise
+        response = await page.goto(url)
 
         # ログ出力を追加
         print("現在のHTTPヘッダー:", response.headers)
@@ -238,9 +182,5 @@ async def main():
     with open(existing_file, 'w', encoding='utf-8') as f:
         f.write(xml_str)
 
-    # ブラウザを閉じる
-    await browser.close()
-
 # 非同期関数を実行
-#asyncio.get_event_loop().run_until_complete(main())
-asyncio.run(main())
+asyncio.get_event_loop().run_until_complete(main())
