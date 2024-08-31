@@ -59,22 +59,6 @@ async def main():
 
     try:
         # Pyppeteerでブラウザを開く
-        # 3. ヘッドレスモードの無効化: (必要に応じてコメントアウトを外す)
-        # browser = await launch(
-        #     executablePath='/usr/bin/chromium-browser',
-        #     headless=False,  # ヘッドレスモードを無効化
-        #     args=[
-        #         '--no-sandbox',
-        #         '--disable-setuid-sandbox',
-        #         '--disable-dev-shm-usage',
-        #         '--disable-accelerated-2d-canvas',
-        #         '--disable-gpu'
-        #     ],
-        #     defaultViewport=None,
-        #     userDataDir='./user_data',
-        #     logLevel='INFO'  # ログレベルを上げる
-        # )
-
         browser = await launch(
             executablePath='/usr/bin/chromium-browser',
             headless=True,
@@ -107,10 +91,11 @@ async def main():
                 # 1. ウェブサイトの構造変更の確認:
                 print(f"HTML Content: {await page.content()}")  # HTML コンテンツを出力
 
-                # 2. JavaScript の実行を待機: (必要に応じてコメントアウトを外す)
-                # await page.waitForSelector('#some-element')  # 特定の要素が表示されるまで待機
-                await page.waitForNavigation()  # ページの読み込み完了を待つ
-                # await page.waitForFunction('() => document.readyState === "complete"')  # 必要な JavaScript の実行が完了するまで待機
+                # ページの読み込み完了を待機
+                await page.waitForNavigation()
+
+                # ***** スケジュール情報を含む要素が表示されるまで待機 *****
+                await page.waitForSelector('.sc--day')  # スケジュール情報を含む要素のセレクタ
 
                 # ページのHTMLを取得
                 html = await page.content()
