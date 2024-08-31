@@ -73,15 +73,15 @@ async def main():
             userDataDir='./user_data',
             logLevel='INFO'  # ログレベルを上げる
         )
-        print(f"Chromium launched successfully: {browser}")
+        (f"Chromium launched successfully: {browser}")
 
         while current_date <= end_date:
             yyyymm = current_date.strftime('%Y%m')
             url = f"https://www.nogizaka46.com/s/n46/media/list?dy={yyyymm}&members={{%22member%22:[%2255387%22]}}"
-            print(f"Fetching URL: {url}")
+            (f"Fetching URL: {url}")
 
             page = await browser.newPage()
-            print(f"Page created: {page}")
+            (f"Page created: {page}")
 
             try:
                 # 1. タイムアウト値の延長: (必要に応じて timeout 値を調整)
@@ -109,7 +109,7 @@ async def main():
                 # 2. find_all の結果を詳細に確認
                 day_schedules = soup.find_all('div', class_='sc--day')
                 print(f"day_schedules: {day_schedules}")
-                # print(f"soup.prettify(): {soup.prettify()}") # 必要であればHTML構造全体を確認
+                print(f"soup.prettify(): {soup.prettify()}") # 必要であればHTML構造全体を確認
 
                 # 各スケジュールの情報を取得
                 for day_schedule in day_schedules:
