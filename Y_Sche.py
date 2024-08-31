@@ -86,6 +86,12 @@ async def main():
             response = await page.goto(url)
             print(f"Navigated to URL: {url}, Status: {response.status}")
 
+            # **1. ウェブサイトの構造変更の確認:**
+            print(f"HTML Content: {await page.content()}")  # HTML コンテンツを出力
+
+            # ページの読み込みが完了するまで待機
+            await page.waitForNavigation()
+
             # ページのHTMLを取得
             html = await page.content()
 
@@ -145,49 +151,7 @@ async def main():
             await browser.close()
             print("Chromium closed.")
 
-    # 新規情報があれば、Discordへ通知
-    # print('# 新規情報があれば、Discordへ通知')
-    print(new_schedules)
-    # for date, title, url, category, start_time in new_schedules:
-    #    discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
-    #    payload = {"content": discord_message}
-    #    await asyncio.sleep(1)
-
-    # Discordへメッセージを送信
-    # response = requests.post(webhook_url, json=payload)
-    # if response.status_code != 204:
-    #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
-
-    # 既存のスケジュール情報もリスト形式に変換
-    existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in
-                                existing_schedules]
-
-    # 既存の情報と新規情報を合わせる
-    all_schedules = existing_schedules_list + new_schedules
-
-    # 日付の降順にソート
-    all_schedules.sort(key=lambda x: datetime.strptime(x[0], "%Y/%m/%d"), reverse=True)
-
-    # RSSフィードを生成
-    rss = Element("rss", version="2.0")
-    channel = SubElement(rss, "channel")
-    SubElement(channel, "title").text = "弓木奈於のスケジュール"
-    SubElement(channel, "description").text = ""
-    SubElement(channel, "link").text = ""
-    for date, title, url, category, start_time in all_schedules:
-        item = SubElement(channel, "item")
-        SubElement(item, "title").text = title
-        SubElement(item, "link").text = url
-        SubElement(item, "pubDate").text = date
-        SubElement(item, "category").text = category
-        SubElement(item, "start_time").text = start_time
-
-    xml_str = xml.dom.minidom.parseString(tostring(rss)).toprettyxml(indent="   ")
-
-    # ファイルに保存
-    with open(existing_file, 'w', encoding='utf-8') as f:
-        f.write(xml_str)
-
+    # ... (Discordへの通知, RSSフィードの生成, ファイルへの保存) ...
 
 # 非同期関数を実行
 if __name__ == "__main__":
