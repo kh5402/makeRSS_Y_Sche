@@ -1,4 +1,3 @@
-
 import os
 import re
 from bs4 import BeautifulSoup
@@ -15,23 +14,23 @@ from urllib.parse import urlparse, parse_qs
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
     existing_schedules = set()
-    tree = ET.parse(file_name)
-    root = tree.getroot()
-    for item in root.findall(".//item"):
-        date = item.find('pubDate').text
-        title = html_unescape(item.find('title').text)
-        url = html_unescape(item.find('link').text)
-        category = item.find('category').text
-        start_time = item.find('start_time').text
-        existing_schedules.add((date, title, url, category, start_time))
+    try:
+        tree = ET.parse(file_name)
+        root = tree.getroot()
+        for item in root.findall(".//item"):
+            date = item.find('pubDate').text
+            title = html_unescape(item.find('title').text)
+            url = html_unescape(item.find('link').text)
+            category = item.find('category').text
+            start_time = item.find('start_time').text
+            existing_schedules.add((date, title, url, category, start_time))
+    except FileNotFoundError:
+        print(f"File not found: {file_name}")
+    except ET.ParseError:
+        print(f"Error parsing XML file: {file_name}")
     return existing_schedules
 
-#URLが可変する部分を除外してURLを確認する
-#def extract_url_part(url):
-#    match = re.search(r'pri1=(\d+)&wd00=(\d+)&wd01=(\d+)&wd02=(\d+)', url)
-#    if match:
-#        return match.group(0)
-#    return ""
+# URLが可変する部分を除外してURLを確認する
 def extract_url_part(url):
     parsed_url = urlparse(url)
     path = parsed_url.path.split("/")[-1]  # /103002 や /102232 を取得
@@ -39,20 +38,17 @@ def extract_url_part(url):
     unique_part = f"{path}_{query.get('pri1', [''])[0]}_{query.get('wd00', [''])[0]}_{query.get('wd01', [''])[0]}_{query.get('wd02', [''])[0]}"
     return unique_part
 
-
 async def main():
-
     # Discordのwebhook URLを環境変数から取得
-    #webhook_url = os.environ['WEBHOOK_URL']
+    # webhook_url = os.environ['WEBHOOK_URL']
 
     # 既存のXMLファイルがあれば、その情報を取得
     existing_file = 'Y_Sche.xml'
-    existing_schedules = get_existing_schedules(existing_file) if os.path.exists(existing_file) else set()
+    existing_schedules = get_existing_schedules(existing_file)
 
     # 後で重複チェックするときの為の一覧
     existing_schedules_check = {(date, extract_url_part(url)) for date, _, url, _, _ in existing_schedules}
-    #print(existing_schedules_check)
-    
+
     # 新規情報を保存するリスト
     new_schedules = []
 
@@ -60,14 +56,8 @@ async def main():
     start_date = (datetime.today().replace(day=1) - timedelta(days=1)).replace(day=1)
     end_date = start_date + timedelta(days=90)
     current_date = start_date
-    schedules = []
-    while current_date <= end_date:
-        
-        yyyymm = current_date.strftime('%Y%m')
-        url = f"https://www.nogizaka46.com/s/n46/media/list?dy={yyyymm}&members={{%22member%22:[%2255387%22]}}"
-        print('yyyymm：' + yyyymm + ' url：' + url)
 
-        
+    try:
         # Pyppeteerでブラウザを開く
         browser = await launch(
             executablePath='/usr/bin/chromium-browser',
@@ -80,81 +70,98 @@ async def main():
                 '--disable-gpu'
             ],
             defaultViewport=None,
-            userDataDir='./user_data'
+            userDataDir='./user_data',
+            logLevel='INFO'  # ログレベルを上げる
         )
-        
-        page = await browser.newPage()
-        response = await page.goto(url)
+        print(f"Chromium launched successfully: {browser}")
 
-        # ログ出力を追加
-        print("現在のHTTPヘッダー:", response.headers)
+        while current_date <= end_date:
+            yyyymm = current_date.strftime('%Y%m')
+            url = f"https://www.nogizaka46.com/s/n46/media/list?dy={yyyymm}&members={{%22member%22:[%2255387%22]}}"
+            print(f"Fetching URL: {url}")
 
-        # ページのHTMLを取得
-        html = await page.content()
-        
-        # BeautifulSoupで解析
-        soup = BeautifulSoup(html, 'html.parser')
+            page = await browser.newPage()
+            print(f"Page created: {page}")
 
-        # スケジュール情報の取得
-        day_schedules = soup.find_all('div', class_='sc--day')
-        #print(f"check: {str(soup)}")
-        print(f"day_schedules: {day_schedules}")  # ここで取得した日ごとのスケジュール情報を出力
+            response = await page.goto(url)
+            print(f"Navigated to URL: {url}, Status: {response.status}")
 
-        # 各スケジュールの情報を取得
-        for day_schedule in day_schedules:
-            date_tag = day_schedule.find('div', class_='sc--day__hd js-pos a--tx')
-            if date_tag is None:
-                continue
-            date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.find('p', class_='sc--day__d f--head').text}"
-            
-            schedule_links = day_schedule.find_all('a', class_='m--scone__a hv--op')
-            
-            for link in schedule_links:
-                
-                title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl'))).group(1)
-                title_tag = link.find('p', class_='m--scone__ttl')
-                if title_tag:
-                    title = title_tag.get_text()
-                title = html_unescape(str(title)) 
-                    
-                url = link['href']
-                url = html_unescape(str(url))
-                
-                category = link.find('p', class_='m--scone__cat__name').text
-                start_time_tag = link.find('p', class_='m--scone__start')
-                start_time = start_time_tag.text if start_time_tag else ''
+            # ページのHTMLを取得
+            html = await page.content()
 
-                # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
-                extracted_url = extract_url_part(url)
-                try:
-                    datetime.strptime(date, "%Y/%m/%d")  # ここで日付のフォーマットをチェック
-                    if (date, extracted_url) not in existing_schedules_check:
-                        new_schedules.append((date, title, url, category, start_time))
-                        print(f"新規情報を追加: {date, title, url, category, start_time}")  # ここで新規情報を出力
-                except ValueError:
-                    print(f"新規情報の日付のフォーマットがおかしいから、このデータはスキップするで！日付: {date}")
+            # BeautifulSoupで解析
+            soup = BeautifulSoup(html, 'html.parser')
 
-        # 次の月へ        
-        current_date = (current_date + timedelta(days=31)).replace(day=1)
-        if current_date.day != 1: # 月の最初の日ではない場合
-            current_date = (current_date + timedelta(days=1)).replace(day=1) # 月を1つ進める
-    
+            # スケジュール情報の取得
+            day_schedules = soup.find_all('div', class_='sc--day')
+
+            # 各スケジュールの情報を取得
+            for day_schedule in day_schedules:
+                date_tag = day_schedule.find('div', class_='sc--day__hd js-pos a--tx')
+                if date_tag is None:
+                    continue
+                date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.find('p', class_='sc--day__d f--head').text}"
+
+                schedule_links = day_schedule.find_all('a', class_='m--scone__a hv--op')
+
+                for link in schedule_links:
+                    title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl')))
+                    if title:
+                        title = title.group(1)
+                    else:
+                        title = ""
+                    title_tag = link.find('p', class_='m--scone__ttl')
+                    if title_tag:
+                        title = title_tag.get_text()
+                    title = html_unescape(str(title))
+
+                    url = link['href']
+                    url = html_unescape(str(url))
+
+                    category = link.find('p', class_='m--scone__cat__name').text
+                    start_time_tag = link.find('p', class_='m--scone__start')
+                    start_time = start_time_tag.text if start_time_tag else ''
+
+                    # 新規情報の確認 URLは変わるので日付とタイトルだけで確認
+                    extracted_url = extract_url_part(url)
+                    try:
+                        datetime.strptime(date, "%Y/%m/%d")  # ここで日付のフォーマットをチェック
+                        if (date, extracted_url) not in existing_schedules_check:
+                            new_schedules.append((date, title, url, category, start_time))
+                            print(f"新規情報を追加: {date, title, url, category, start_time}")  # ここで新規情報を出力
+                    except ValueError:
+                        print(f"新規情報の日付のフォーマットがおかしいから、このデータはスキップするで！日付: {date}")
+
+            # 次の月へ
+            current_date = (current_date + timedelta(days=31)).replace(day=1)
+            if current_date.day != 1:  # 月の最初の日ではない場合
+                current_date = (current_date + timedelta(days=1)).replace(day=1)  # 月を1つ進める
+
+    except Exception as e:
+        print(f"Error occurred during browser operation: {e}")
+
+    finally:
+        if browser:
+            await browser.close()
+            print("Chromium closed.")
+
     # 新規情報があれば、Discordへ通知
-    #print('# 新規情報があれば、Discordへ通知')
+    # print('# 新規情報があれば、Discordへ通知')
     print(new_schedules)
-    #for date, title, url, category, start_time in new_schedules:
+    # for date, title, url, category, start_time in new_schedules:
     #    discord_message = f"新しいスケジュールやで！🎉💖\n日付: {date}\n開始時間: {start_time}\nカテゴリ: {category}\nタイトル: {title}\nURL: {url}\n"
     #    payload = {"content": discord_message}
     #    await asyncio.sleep(1)
 
-        # Discordへメッセージを送信
-        #response = requests.post(webhook_url, json=payload)
-        #if response.status_code != 204:
-        #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
-            
+    # Discordへメッセージを送信
+    # response = requests.post(webhook_url, json=payload)
+    # if response.status_code != 204:
+    #    print(f"通知に失敗したで: {response.text}") # エラーメッセージを表示
+
     # 既存のスケジュール情報もリスト形式に変換
-    existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in existing_schedules]
-    
+    existing_schedules_list = [(date, title, url, category, start_time) for date, title, url, category, start_time in
+                                existing_schedules]
+
     # 既存の情報と新規情報を合わせる
     all_schedules = existing_schedules_list + new_schedules
 
@@ -175,12 +182,13 @@ async def main():
         SubElement(item, "category").text = category
         SubElement(item, "start_time").text = start_time
 
-    
     xml_str = xml.dom.minidom.parseString(tostring(rss)).toprettyxml(indent="   ")
 
     # ファイルに保存
     with open(existing_file, 'w', encoding='utf-8') as f:
         f.write(xml_str)
 
+
 # 非同期関数を実行
-asyncio.get_event_loop().run_until_complete(main())
+if __name__ == "__main__":
+    asyncio.get_event_loop().run_until_complete(main())
