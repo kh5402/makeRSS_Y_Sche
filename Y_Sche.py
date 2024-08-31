@@ -88,14 +88,17 @@ async def main():
                 response = await page.goto(url, timeout=60000)
                 print(f"Navigated to URL: {url}, Status: {response.status}")
 
-                # 1. ウェブサイトの構造変更の確認:
-                print(f"HTML Content: {await page.content()}")  # HTML コンテンツを出力
+                # 1. ウェブサイトの構造変更の確認: (HTML出力はコメントアウト)
+                # print(f"HTML Content: {await page.content()}")
 
                 # ページの読み込み完了を待機
                 await page.waitForNavigation()
 
                 # ***** スケジュール情報を含む要素が表示されるまで待機 *****
-                await page.waitForSelector('.sc--day')  # スケジュール情報を含む要素のセレクタ
+                await page.waitForSelector('.sc--day', timeout=30000)
+
+                # ***** 3. JavaScript の実行を待機 *****
+                await page.waitForFunction('() => document.readyState === "complete"')
 
                 # ページのHTMLを取得
                 html = await page.content()
@@ -103,9 +106,10 @@ async def main():
                 # BeautifulSoupで解析
                 soup = BeautifulSoup(html, 'html.parser')
 
-                # スケジュール情報の取得
+                # 2. find_all の結果を詳細に確認
                 day_schedules = soup.find_all('div', class_='sc--day')
                 print(f"day_schedules: {day_schedules}")
+                # print(f"soup.prettify(): {soup.prettify()}") # 必要であればHTML構造全体を確認
 
                 # 各スケジュールの情報を取得
                 for day_schedule in day_schedules:
@@ -203,7 +207,6 @@ async def main():
     # ファイルに保存
     with open(existing_file, 'w', encoding='utf-8') as f:
         f.write(xml_str)
-
 
 # 非同期関数を実行
 if __name__ == "__main__":
