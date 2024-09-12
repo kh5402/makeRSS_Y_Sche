@@ -107,30 +107,48 @@ async def main():
                 soup = BeautifulSoup(html, 'html.parser')
 
                 # 2. find_all の結果を詳細に確認
-                day_schedules = soup.find_all('div', class_='sc--day')
+                # sc--lists クラスを持つ要素の子要素として sc--day を探す
+            　　
+                schedule_list = soup.find('div', class_='sc--lists js-apischedule-list')
+                day_schedules = schedule_list.find_all('div', class_='sc--day')
+            
+                #day_schedules = soup.find_all('div', class_='sc--day')
                 print(f"day_schedules: {day_schedules}")
                 print(f"soup.prettify(): {soup.prettify()}") # 必要であればHTML構造全体を確認
 
                 # 各スケジュールの情報を取得
                 for day_schedule in day_schedules:
-                    date_tag = day_schedule.find('div', class_='sc--day__hd js-pos a--tx')
+                    
+                    #date_tag = day_schedule.find('div', class_='sc--day__hd js-pos a--tx')
+                    date_tag = day_schedule.find('p', class_='sc--day__d f--head') # 日付だけを取得
+                    
                     if date_tag is None:
                         continue
-                    date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.find('p', class_='sc--day__d f--head').text}"
-
+                    
+                    #date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.find('p', class_='sc--day__d f--head').text}"
+                    date = f"{yyyymm[:4]}/{yyyymm[4:]}/{date_tag.text}"
+            
                     schedule_links = day_schedule.find_all('a', class_='m--scone__a hv--op')
 
                     for link in schedule_links:
-                        title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl')))
-                        if title:
-                            title = title.group(1)
-                        else:
-                            title = ""
+                        #title = re.search(r'<p class="m--scone__ttl">(.*?)</p>', str(link.find('p', class_='m--scone__ttl')))
+                        #title_tag = link.find('p', class_='m--scone__ttl')
+                        #if title:
+                        #    title = title.group(1)
+                        #else:
+                        #    title = ""
+                        #title_tag = link.find('p', class_='m--scone__ttl')
+                        #if title_tag:
+                        #    title = title_tag.get_text()
+                        #title = html_unescape(str(title))
+                        
                         title_tag = link.find('p', class_='m--scone__ttl')
                         if title_tag:
-                            title = title_tag.get_text()
+                            title = title_tag.get_text() # 直接テキストを取得
+                        else:
+                            title = ""
                         title = html_unescape(str(title))
-
+                        
                         url = link['href']
                         url = html_unescape(str(url))
 
