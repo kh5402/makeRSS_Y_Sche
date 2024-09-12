@@ -108,7 +108,7 @@ async def main():
 
                 # 2. find_all の結果を詳細に確認
                 # sc--lists クラスを持つ要素の子要素として sc--day を探す
-            　　
+                
                 schedule_list = soup.find('div', class_='sc--lists js-apischedule-list')
                 day_schedules = schedule_list.find_all('div', class_='sc--day')
             
