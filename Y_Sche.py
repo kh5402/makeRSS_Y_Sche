@@ -10,6 +10,7 @@ import asyncio
 import requests
 from html import unescape as html_unescape
 from urllib.parse import urlparse, parse_qs
+import traceback
 
 # 既存のXMLファイルから情報取得
 def get_existing_schedules(file_name):
@@ -168,7 +169,10 @@ async def main():
 
             except asyncio.TimeoutError:
                 print(f"Navigation Timeout Exceeded for URL: {url}")
-                # タイムアウトが発生した場合の処理をここに記述
+                traceback.print_exc()  # スタックトレースを出力
+            except Exception as e:
+                print(f"Error occurred during browser operation: {e}")
+                traceback.print_exc()
 
             # 次の月へ
             current_date = (current_date + timedelta(days=31)).replace(day=1)
