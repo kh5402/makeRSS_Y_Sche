@@ -93,14 +93,27 @@ async def main():
                 #print(f"HTML Content: {await page.content()}")
 
                 # ページの読み込み完了を待機
-                await page.waitForNavigation()
+                #await page.waitForNavigation()
 
                 # ***** スケジュール情報を含む要素が表示されるまで待機 *****
-                await page.waitForSelector('.sc--day', timeout=30000)
+                #await page.waitForSelector('.sc--day', timeout=30000)
 
                 # ***** 3. JavaScript の実行を待機 *****
-                await page.waitForFunction('() => document.readyState === "complete"')
+                #await page.waitForFunction('() => document.readyState === "complete"')
 
+
+                # ページの読み込み完了を待機 (page.waitForNavigation() を page.waitForFunction() に置き換え)
+                await page.waitForFunction(
+                    '() => document.querySelectorAll(".sc--day").length > 0', 
+                    timeout=60000
+                )
+
+                # ***** 3. JavaScript の実行を待機 *****
+                await page.waitForFunction('() => document.readyState === "complete"', timeout=60000)
+
+
+                
+                
                 # ページのHTMLを取得
                 html = await page.content()
 
