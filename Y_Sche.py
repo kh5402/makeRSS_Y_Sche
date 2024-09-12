@@ -89,7 +89,7 @@ async def main():
                 print(f"Navigated to URL: {url}, Status: {response.status}")
 
                 # 1. ウェブサイトの構造変更の確認: (HTML出力はコメントアウト)
-                print(f"HTML Content: {await page.content()}")
+                #print(f"HTML Content: {await page.content()}")
 
                 # ページの読み込み完了を待機
                 await page.waitForNavigation()
