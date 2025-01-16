@@ -35,7 +35,7 @@ jobs:
 
     - name: Install Pyppeteer dependencies
       run: |
-        sudo apt-get install -y libx11-xcb1 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
+        sudo apt-get install -y libx11-xcb1 libxrandr2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
 
     - name: Remove existing Chromium
       run: sudo rm -f /usr/bin/chromium-browser
@@ -48,7 +48,6 @@ jobs:
       id: cache-chromium
       uses: actions/cache@v2
       with:
-        #path: /usr/bin/chromium-browser
         path: /snap/chromium/
         key: my-chromium-cache-v1
         restore-keys: Linux-chromium-
@@ -63,13 +62,7 @@ jobs:
         
     - name: Find Chromium Path
       run: |
-        which chromium-browser
-
-    - name: Check Chromium Path
-      run: ls -l /usr/bin/chromium-browser
-  
-    - name: Set Chromium Path
-      run: echo "CHROMIUM_PATH=/usr/bin/chromium-browser" >> $GITHUB_ENV
+        echo "CHROMIUM_PATH=$(which chromium-browser)" >> $GITHUB_ENV
 
     - name: Run Pyppeteer Script
       run: python3 Y_Sche.py # Pythonファイルのパスを適切に設定してね
