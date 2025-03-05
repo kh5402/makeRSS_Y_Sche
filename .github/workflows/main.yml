@@ -3,17 +3,16 @@ on:
   workflow_dispatch: # 手動で実行できるようにする
   schedule:
     # 日本時間で10時から25時（協定世界時で毎日、1時から4時、10時から16時）まで3時間ごとに実行
-    - cron: '0 1-4/3,10-16/3 * * *' 
+    - cron: '0 1-4/3,10-16/3 * **' 
 env:
   WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-
 jobs:
   run-script:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         token: ${{ secrets.MY_SECRET_TOKEN }}
     
@@ -21,9 +20,8 @@ jobs:
       uses: actions/setup-python@v3
       with:
           python-version: '3.x'
-
     - name: Cache Pyppeteer
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: /opt/hostedtoolcache/Python/3.11.4/x64/lib/python3.11/site-packages/pyppeteer # Pyppeteerのインストール先のパス
         key: my-pyppeteer-cache-v1
@@ -32,42 +30,35 @@ jobs:
     - name: Install dependencies
       run: |
         pip3 install -r requirements.txt
-
     - name: Install Pyppeteer dependencies
       run: |
         sudo apt-get install -y libx11-xcb1 libxrandr2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
-
     - name: Remove existing Chromium
       run: sudo rm -f /usr/bin/chromium-browser
-
     - name: Check Chromium Snap Path
       run: |
         snap info chromium
     
     - name: Restore Chromium from cache
       id: cache-chromium
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: /snap/chromium/
         key: my-chromium-cache-v1
         restore-keys: Linux-chromium-
-
     - name: Install Chromium
       if: steps.cache-chromium.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install -y chromium-browser
         chromium-browser --version # これでバージョンを確認できるよ😊
-
         
     - name: Find Chromium Path
       run: |
         echo "CHROMIUM_PATH=$(which chromium-browser)" >> $GITHUB_ENV
-
     - name: Run Pyppeteer Script
       run: python3 Y_Sche.py # Pythonファイルのパスを適切に設定してね
       timeout-minutes: 10
-
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
